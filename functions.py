@@ -1,3 +1,14 @@
+####################################### CHECKPOINT 5 | DOCKER API ###############################
+
+'''
+GRUPO: AIKEL
+
+INTEGRANTES: RAKEL DE MACEDO OLIVEIRA | RM99435
+             JOÃO VICTOR SANTOS ALVES | RM99634
+
+LINK DO YOUTUBE: 
+'''
+
 import requests
 import json
 
