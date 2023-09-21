@@ -619,4 +619,5 @@ def get_data_usage_info():
     except Exception as e:
         print(f"Erro ao obter informações de uso de dados do sistema Docker: {str(e)}")
 
+
 menu()
