@@ -27,44 +27,49 @@ def menu():
         print("15. Obter informações de uso de dados")
         print("16. Sair do menu")
         print("-" * 112)
+    
+        try:
 
-        choice = input("\nEscolha uma opção pelo número: ")
+            choice = input("\nEscolha uma opção pelo número: ")
 
-        if choice == "1":
-            list_containers()
-        elif choice == "2":
-            create_container()
-        elif choice == "3":
-            list_process_in_containers()
-        elif choice == "4":
-            get_logs()
-        elif choice == "5":
-            start_container()
-        elif choice == "6":
-            stop_container()
-        elif choice == "7":
-            restart_container()
-        elif choice == "8":
-            kill_container()
-        elif choice == "9":
-            remove_container()
-        elif choice == "10":
-            list_images()
-        elif choice == "11":
-            remove_images()
-        elif choice == "12":
-            get_info_system()
-        elif choice == "13":
-            ping()
-        elif choice == "14":
-            get_version()
-        elif choice == "15":
-            get_data_usage_info()
-        elif choice == "16":
-            print("Saindo do menu.")
-            break
-        else:
-            print("Opção inválida. Escolha um número de 1 a 16.")
+            if choice == "1":
+                list_containers()
+            elif choice == "2":
+                create_container()
+            elif choice == "3":
+                list_process_in_containers()
+            elif choice == "4":
+                get_logs()
+            elif choice == "5":
+                start_container()
+            elif choice == "6":
+                stop_container()
+            elif choice == "7":
+                restart_container()
+            elif choice == "8":
+                kill_container()
+            elif choice == "9":
+                remove_container()
+            elif choice == "10":
+                list_images()
+            elif choice == "11":
+                remove_images()
+            elif choice == "12":
+                get_info_system()
+            elif choice == "13":
+                ping()
+            elif choice == "14":
+                get_version()
+            elif choice == "15":
+                get_data_usage_info()
+            elif choice == "16":
+                print("\nSaindo do menu.\n")
+                break
+            else:
+                print("\nOpção inválida. Escolha um número de 1 a 16.\n")
+        
+        except:
+            menu()
 
 
 def list_containers(see=None):
@@ -111,15 +116,30 @@ def list_process_in_containers():
     print('\nEscolha o número do container que deseja ver os processos')
     print('Temos esses containers: \n')
 
+    running_containers_ids = []
+
     for index, container_id in enumerate(containers_ids, start=1):
+        container_info_endpoint = f'/containers/{container_id}/json'
+        container_info_response = requests.get(f'{docker_api}{container_info_endpoint}')
+
+        if container_info_response.status_code == 200:
+            container_info = container_info_response.json()
+            if container_info["State"]["Status"] == "running":
+                running_containers_ids.append(container_id)
+
+    if not running_containers_ids:
+        print("Não há contêineres em execução para listar processos.")
+        return
+
+    for index, container_id in enumerate(running_containers_ids, start=1):
         print(f"Container {index}: {container_id}")
 
     option = input('\nDigite o número do container que você deseja ver os processos: ')
 
     try:
         option = int(option)
-        if 1 <= option <= len(containers_ids):
-            container_id = containers_ids[option - 1]
+        if 1 <= option <= len(running_containers_ids):
+            container_id = running_containers_ids[option - 1]
 
             # Endpoint que lista os processos dos containers
             endpoint = f'/containers/{container_id}/top'
@@ -139,7 +159,6 @@ def list_process_in_containers():
             print("Opção inválida. Por favor, escolha uma opção válida.")
     except ValueError:
         print("Entrada inválida. Por favor, insira um número válido.")
-        list_process_in_containers()
 
 
 def get_logs():
@@ -153,6 +172,7 @@ def get_logs():
 
     option = input('\nDigite o número do container que você deseja ver os logs: ')
     print('\nAqui está os logs do container:\n')
+    print("-" * 112)
 
     option = int(option)
     if 1 <= option <= len(containers_ids):
@@ -169,11 +189,12 @@ def get_logs():
                 if line:
                     # Decodifique a linha para texto UTF-8
                     print(line.decode('latin-1'))
+                    print('\n')
         else:
             print(f"Erro ao obter os logs (Código de Status: {response.status_code})")
 
 
-def start_container():  
+def start_container():
 
     list_containers(see='No')
 
@@ -231,12 +252,14 @@ def stop_container():
         if container_info_response.status_code == 200:
             container_info = container_info_response.json()
             if container_info["State"]["Status"] == "running":
-                print(f"Container {index}: {container_id}")
                 running_containers_ids.append(container_id)
 
     if not running_containers_ids:
         print("Não há contêineres em execução para parar.")
         return
+
+    for index, container_id in enumerate(running_containers_ids, start=1):
+        print(f"Container {index}: {container_id}")
 
     option = input('\nDigite o número do container que você deseja parar: ')
 
@@ -306,12 +329,14 @@ def kill_container():
         if container_info_response.status_code == 200:
             container_info = container_info_response.json()
             if container_info["State"]["Status"] == "running":
-                print(f"Container {index}: {container_id}")
                 running_containers_ids.append(container_id)
 
     if not running_containers_ids:
         print("Não há contêineres em execução para matar.")
         return
+    
+    for index, container_id in enumerate(running_containers_ids, start=1):
+        print(f"Container {index}: {container_id}")
 
     option = input('\nDigite o número do container que deseja matar: ')
 
@@ -582,7 +607,5 @@ def get_data_usage_info():
 
     except Exception as e:
         print(f"Erro ao obter informações de uso de dados do sistema Docker: {str(e)}")
-
-
 
 menu()
