@@ -68,7 +68,7 @@ cd /caminho/para/o/diretorio/
 
 * É necessário habilitar a api do docker, com o comando:
 ```
-sudo dockerd --host unix://var/run/docker.sock --host tcp://0.0.0.0:2375
+sudo dockerd --host unix:///var/run/docker.sock --host tcp://0.0.0.0:2375
 ```
 
 * E após isso, utilizar um servidor Apache ou Nginx:
