@@ -81,6 +81,7 @@ sudo docker run --name pplware -p 8080:80 -v /home/{usuario}/site/:/usr/local/ap
 Foi feita a utilização da api do Docker e de um servidor Apache hospedado no mesmo. Utilizamos, também, as bibliotecas json e requests do Python 3.
 
 # Link de vídeao explicativo
+[Vídeo Explicativo](https://youtu.be/pstK7a-2TmM)
 
 # Pessoas Desenvolvedoras do Projeto
 
