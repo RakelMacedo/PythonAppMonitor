@@ -75,6 +75,10 @@ sudo dockerd --host unix://var/run/docker.sock --host tcp://0.0.0.0:2375
 ```
 sudo docker run --name pplware -p 8080:80 -v /home/{usuario}/site/:/usr/local/apache2/htdocs/httpd
 ```
+* Ou utilizando o comando:
+```
+sudo docker run --name pplware -p 8080:80 -httpd
+```
 
 # Tecnologias utilizadas
 
